@@ -1,0 +1,102 @@
+import time
+
+
+time_move_1=18
+time_move_2=32
+time_move_3=46
+cnc_first=455
+cnc_second=182
+time_right=27
+time_left=32
+time_clean=25
+count_time_max=28800
+
+cnc_l=[10]*4
+cnc_r=[10]*4
+
+time_sum=0
+counter=0
+side_flag=0
+count_cicle=0
+count_cnc=0
+
+
+def cnc_for_each(cnc_l,cnc_r,time_change):
+    for i in cnc_r:
+        i-=time_change
+    for j in cnc_l:
+        j-=time_change
+
+    return cnc_l,cnc_r
+
+def printcnc(cnc):
+    print("time left:")
+    counter_n=1 
+    for i in cnc:
+        print("cnc",counter_n," ",i)
+        counter_n+=1
+
+    time.sleep(0.5)
+    #print(c1,c2,c3,c4,c5,c6,c7,c8,seq='\n'
+
+while(time_sum<count_time_max):
+    time_temp=time_sum
+
+    if counter==8 and time_sum>cnc_first*count_cicle+time_left+time_move_3*(count_cicle-1):
+        counter=0
+        time_sum+=time_move_3
+        count_cicle+=1
+        count_cnc=0
+    elif counter==8 and time_sum<=cnc_first*count_cicle+time_left+time_move_3*(count_cicle-1):
+        time_sum=cnc_first*count_cicle+time_left+(count_cicle-1)*time_move_3
+        counter=0
+        time_sum+=time_move_3
+        count_cicle+=1
+        count_cnc=0
+
+   
+    if counter%2==0 and counter!=0:
+        time_sum=time_sum+time_move_1 
+    
+    if side_flag==0 and cnc_r[count_cnc]<=0:
+        time_sum+=time_right
+        cnc_r[count_cnc]+=cnc_first
+        side_flag=1
+        print(time_sum,end="    ")
+
+    elif side_flag==0 and cnc_r[count_cnc]>0:
+        cnc_for_each(cnc_l,cnc_r,cnc_r[count_cnc])
+        time_sum+=time_right
+        cnc_r[count_cnc]+=cnc_first
+        side_flag=1
+        print(time_sum,end="    ")
+
+
+    elif side_flag==1 and cnc_l[count_cnc]<=0 and count_cicle>=1:
+        time_sum+=time_left
+        side_flag=0
+        cnc_l[count_cnc]+=cnc_second
+        count_cnc+=1
+        print(time_sum)
+
+    elif side_flag==1 and cnc_l[count_cnc]>0 and count_cicle>=1:
+        cnc_for_each(cnc_l,cnc_r,cnc_l[count_cnc])
+        time_sum+=time_left
+        cnc_l[count_cnc]+=cnc_second
+        side_flag=0
+        count_cnc+=1
+        print(time_sum)
+
+    elif side_flag==1  and count_cicle<1:
+        count_cnc+=1
+        side_flag=0
+
+
+    if count_cicle>=1:
+        time_sum+=time_clean
+
+    
+    
+    cnc_for_each(cnc_l,cnc_r,time_sum-time_temp)
+
+    counter+=1
