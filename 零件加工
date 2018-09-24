@@ -1,0 +1,165 @@
+a=0
+left=0
+right=0
+time_sum=0
+time_right=27
+time_left=32
+time_clean=25
+time_move_1=18
+time_move_2=32
+time_move_3=46 
+time_finish=545 
+counter=0 
+ad=1 
+
+cnc=[0]*8 
+recount=0 
+
+stop=[10]*8
+stop_count=8 
+judge=0 
+
+import time
+import random
+
+
+def printcnc(cnc):
+    print("time left:")
+    counter_n=1 
+    for i in cnc:
+        print("cnc",counter_n," ",i)
+        counter_n+=1
+
+    time.sleep(0.5)
+    #print(c1,c2,c3,c4,c5,c6,c7,c8,seq='\n')
+
+def countcnc(cnc,j,time):
+    #print(time)
+    for i in range(0,8):
+        if(i!=stop[i]):
+            cnc[i]-=time
+    cnc[j-1]=time_finish
+    return cnc 
+    
+
+def break1(cnc,stop,time):
+    for i in range(0,8):
+        if(i!=stop[i]):
+            cnc[i]-=time
+    return cnc
+
+
+
+
+while(counter<8):
+    time_temp=time_sum 
+
+        
+        
+    if(counter%2==0 and counter!=0):
+        time_sum=time_sum+time_move_1
+    if(ad==0):
+        left=left+time_left
+        time_sum=time_sum+left
+        ad=1
+        counter=counter+1
+
+        recount+=1
+        countcnc(cnc,recount,time_sum-time_temp)
+        #printcnc(cnc)
+    else:
+        right=right+time_right
+        time_sum=time_right+time_sum
+        counter=counter+1
+        ad=0
+
+        recount+=1
+        countcnc(cnc,recount,time_sum-time_temp)
+        #printcnc(cnc)
+    
+    print(time_sum)
+        
+while(time_sum<28800):
+    #print(recount)
+    if recount>=8:
+        recount=0
+
+    #if judge==0:
+     #   stop=[10]*8;
+
+
+    time_temp=time_sum 
+    if(random.randint(1,100)==1):
+        print("break",recount)
+        stop[recount]=recount
+        stop_count=recount
+        cnc[stop_count]=0
+        judge=16
+        
+        
+
+
+        
+    
+        
+    if(counter%8==0):
+        if(time_right+time_finish*counter/8>time_sum):
+            time_sum=int(time_right+time_finish*(counter/8))
+        time_sum+=time_move_3 
+        #print(time_sum)
+    if(counter%2==0 and counter!=0 and counter%8!=0):
+        time_sum=time_sum+time_move_1
+    
+
+    if(ad==0 and judge!=0 and recount==stop_count):
+        break1(cnc,stop,time_left)
+        cnc[stop_count]="break"
+        judge-=1
+        #printcnc(cnc)
+        ad=1
+        recount+=1
+
+    elif(ad==0):
+        #print(time_sum)
+        left=left+time_left
+        time_sum=time_sum+time_left
+        ad=1
+        counter=counter+1
+        recount+=1
+        time_sum+=time_clean
+        judge-=1
+        
+        cnc=countcnc(cnc,recount,time_sum-time_temp)
+       # printcnc(cnc)
+        print(time_sum,sep='    ')
+
+    elif(ad!=0 and judge!=0 and recount==stop_count):
+        break1(cnc,stop,time_right)
+        cnc[stop_count]="break"
+        judge-=1
+       # printcnc(cnc)
+        ad=0
+        recount+=1
+    
+    elif(ad!=0):
+        right=right+time_right
+        time_sum=time_right+time_sum
+        recount+=1
+        counter=counter+1
+        time_sum+=time_clean
+        ad=0
+        judge-=1
+        
+        cnc=countcnc(cnc,recount,time_sum-time_temp)
+        #printcnc(cnc)
+        print(time_sum,sep='    ')
+
+    
+
+
+
+
+
+
+
+
